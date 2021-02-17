@@ -1,0 +1,276 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <style> 
+    body{
+        padding: 0;
+        margin: 0;
+        background-color: black;
+        font-family: -apple-system, BlinkMacSystemFont, 'bauhaus 93', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .container{
+        position: absolute;
+        bottom:100px;
+        left:200px;
+        width:380px;
+    }
+    
+    .header{
+        width: 1879px;
+        height: 975px;
+        background-image: url('https://wallpaperaccess.com/full/2029165.jpg');
+        background-size: 100%;
+        background-repeat: no-repeat;
+        position: relative;
+    }
+    
+    #date{
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        color: white;
+        font-size: 25px;
+    }
+
+    #time{
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        color: white;
+        font-size: 25px;
+    }
+    
+    #time1{
+        right: 50px;
+        color: black;
+        position: absolute;
+        padding:0;
+        margin:0;
+        font-size: 30px;
+        top:5px;
+        background-color: transparent;
+        max-width:1300px;
+    }
+ 
+    .content{
+        width: 1479px;
+        height: 775px;
+        max-height:775px;
+        background-color: rgb(255,212,245);
+        opacity: 70%;
+        overflow: auto;
+        border-radius:  15px 15px 0 0 ;
+        
+    }
+    .content::-webkit-scrollbar { 
+        display: none; 
+    }
+    .content ul{
+        padding:0;
+        margin:0;
+    }
+    .item{
+        width: 1479px;
+        height: 45px;
+        min-height: 45px;
+        position: relative;
+        border-bottom: 1px solid grey;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .fa-check-circle{
+        color:green;
+        font-size: 30px;
+        padding: 8px;
+    }
+    .fa-circle-thin{
+        font-size: 30px;
+        padding: 8px;
+    }
+    .item p.text{
+        position: absolute;
+        padding:0;
+        margin:0;
+        font-size: 30px;
+        left:50px;
+        top:5px;
+        background-color: transparent;
+        max-width:1300px;
+    }
+    .lineThrough{
+        text-decoration: line-through;
+        color :grey;
+    }
+    .item i.de{
+        position: absolute;
+        font-size: 25px;
+        right:15px;
+        top:10px;
+    }
+
+    .adtd{
+        position: relative;
+        width: 1459px;
+        height:40px;
+        background-color: white;
+        padding: 10px;
+        border-top: 1px solid grey;
+        border-radius:  0 0 15px 15px;
+    }
+    .adtd i{
+        position: absolute;
+        font-size: 40px;
+        color: rgb(65,89,240);
+    }
+    
+    .adtd input{
+        position: absolute;
+        left: 50px;
+        right: 25px;
+        height: 35px;
+        width: 1419px;
+        background-color: transparent;
+        border: none;
+        font-size: 20px;
+        padding-left: 10px;
+        font-family: -apple-system, BlinkMacSystemFont, 'bauhaus 93', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    .adtd input::-webkit-input-placeholder {
+        color: rgb(65,89,240);
+        font-family: -apple-system, BlinkMacSystemFont, 'bauhaus 93', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    </style>
+
+
+</head>
+<body>
+    <div class="header">
+        <div id="date"></div>
+        <div id="time"></div>
+        <div class="container">
+            <div class="content">
+                <ul id="list">
+                </ul>
+            </div>
+            <div class="adtd">
+                <i class="fa fa-plus-circle"></i>
+                <input type="text" id="input" placeholder="Add a to-do">
+            </div>
+        </div>
+    </div>
+
+    
+    <script>
+        const list = document.getElementById("list");
+        const input = document.getElementById("input");
+        const dateElement = document.getElementById("date");
+        const timeElement = document.getElementById("time");
+
+        const CHECK = "fa-check-circle";
+        const UNCHECK = "fa-circle-thin";
+        const LINE = "lineThrough";
+
+        let queue, id;
+
+        let data = localStorage.getItem("TODO");
+
+        if(data){
+            queue = JSON.parse(data);
+            id = queue.length;
+            loadList(queue);
+        }else{
+            queue = [];
+            id = 0;
+        }
+
+        
+        function loadList(array){
+            array.forEach(function(item){
+                addtask(item.name, item.id, item.done, item.trash);
+            });
+        }
+
+        const options = {month:"short", day:"numeric", weekday : "long"};
+        const options2 = {hours:"numeric", minutes:"numeric", seconds:"numeric"}
+        
+        const today = new Date();
+
+        dateElement.innerHTML = today.toLocaleDateString("en-US", options);
+        timeElement.innerHTML = today.toLocaleTimeString(options2);
+        
+
+        function addtask(toDo, id, done, trash){
+            
+            if(trash){ 
+                return; 
+            }
+            const timeElement1 = document.getElementById("time");
+            const options2 = {hours:"numeric", minutes:"numeric", seconds:"numeric"}
+            const today1 = new Date();
+            timeElement1.innerHTML = today1.toLocaleTimeString(options2);
+        
+            const circle = done ? CHECK : UNCHECK;
+            const line = done ? LINE : "";
+            
+            const item = `<li class="item">
+                            <i class="fa ${circle} co" job="complete" id="${id}"></i>
+                            <p class="text ${line}">${toDo}</p>
+                            <div id="time1">${timeElement1.innerHTML}</div>
+                            <i class="fa fa-trash-o de" job="delete" id="${id}"></i>
+                        </li>
+                        `;
+            
+            const position = "beforeend";
+            
+            list.insertAdjacentHTML(position, item);
+        }
+
+        document.addEventListener("keyup",function(even){
+            if(event.keyCode == 13){
+                const toDo = input.value;
+                if(toDo){
+                    addtask(toDo, id, false, false);
+                    queue.push({
+                        name : toDo,
+                        id : id,
+                        done : false,
+                        trash : false
+                        }
+                    );    
+                }
+                input.value = "";
+                }
+            }
+        );
+
+        function finished(element){
+            element.classList.toggle(CHECK);
+            element.classList.toggle(UNCHECK);
+            element.parentNode.querySelector(".text").classList.toggle(LINE);
+            queue[element.id].done = queue[element.id].done ? false : true;
+        }
+
+        function trashed(element){
+            element.parentNode.parentNode.removeChild(element.parentNode);
+            queue[element.id].trash = true;
+        }
+
+        list.addEventListener("click", function(event){
+            const element = event.target;
+            const elementJob = element.attributes.job.value;
+            
+            if(elementJob == "complete"){
+                finished(element);
+            }else if(elementJob == "delete"){
+                trashed(element);
+            }
+            }
+        );
+    </script>
+</body>
+</html>
